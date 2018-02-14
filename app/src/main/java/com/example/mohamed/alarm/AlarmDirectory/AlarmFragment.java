@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -37,9 +38,6 @@ public class AlarmFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-   /* private final AlarmManager alarmMgr;
-    private final PendingIntent alarmIntent;
-*/
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -52,11 +50,10 @@ public class AlarmFragment extends Fragment {
     private final String TAG = AlarmFragment.class.getSimpleName();
     private FloatingActionButton fab;
     ArrayList<Alarm> alarms;
+    private Context mContext;
+
     public AlarmFragment() {
-       /* alarmMgr = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(getContext(), AlarmReceiver.class);
-        alarmIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);*/
-        alarms=new ArrayList<Alarm>();
+
     }
 
     /**
@@ -84,6 +81,7 @@ public class AlarmFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        alarms=new ArrayList<Alarm>();
     }
 
     @Override
@@ -95,12 +93,12 @@ public class AlarmFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), CreateAlarmActivity.class);
+                Intent intent = new Intent(mContext, CreateAlarmActivity.class);
                 startActivityForResult(intent, CREATE_ACTIVITY_REQUES_CODE);
             }
         });
         rv_alarm = (RecyclerView) view.findViewById(R.id.alarmrecycleview);
-        rv_alarm.setLayoutManager(new LinearLayoutManager(getContext()));
+        rv_alarm.setLayoutManager(new LinearLayoutManager(mContext));
         alarmAdapter = new AlarmAdapter(alarms);
         rv_alarm.setAdapter(alarmAdapter);
         return view;
@@ -113,12 +111,8 @@ public class AlarmFragment extends Fragment {
             case CREATE_ACTIVITY_REQUES_CODE: {
                 if (resultCode == Activity.RESULT_OK) {
                     Alarm created_alarm =(Alarm) data.getParcelableExtra(ALARM_TAG);
-                   /* Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(System.currentTimeMillis());
-                    calendar.set(Calendar.HOUR_OF_DAY, created_alarm.getHour());
-                    calendar.set(Calendar.MINUTE, created_alarm.getMinute());
-                    alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                            AlarmManager.INTERVAL_DAY, alarmIntent);*/
+                    created_alarm.setupALarmManager(this.getContext());
+                    Log.e(TAG,"alarm finished"+created_alarm.getId());
                     Snackbar.make(fab.getRootView(), "adding alarm", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                     alarms.add(created_alarm);
@@ -142,6 +136,7 @@ public class AlarmFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mContext=context;
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
