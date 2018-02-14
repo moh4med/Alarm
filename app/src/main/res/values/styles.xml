@@ -17,5 +17,10 @@
         <item name="android:textColorPrimary">#4c9ba7</item>
         <item name="android:textColorSecondary">#a32727</item>
     </style>
+    <style name="CustomActionBar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:windowActionBarOverlay">true</item>
+        <!-- Support library compatibility -->
+        <item name="windowActionBarOverlay">true</item>
+    </style>
 
 </resources>
