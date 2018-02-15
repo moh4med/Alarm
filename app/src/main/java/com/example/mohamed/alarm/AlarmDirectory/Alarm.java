@@ -15,7 +15,7 @@ import java.util.Calendar;
  */
 
 public class Alarm implements Parcelable {
-    private static final String TAG =Alarm.class.getSimpleName() ;
+    private static final String TAG = Alarm.class.getSimpleName();
     private AlarmManager alarmMgr;
     private Intent intent;
     int hour;
@@ -23,6 +23,7 @@ public class Alarm implements Parcelable {
     private PendingIntent alarmIntent;
     private static int tot_id;
     private int id;
+
     public int getId() {
         return id;
     }
@@ -55,16 +56,18 @@ public class Alarm implements Parcelable {
 
     public void setupALarmManager(Context context) {
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        intent = new Intent(context, AlarmReceiver.class);
-        intent.setAction("sdf"+getId());
-        intent.putExtra("hello",getId());
-        alarmIntent = PendingIntent.getBroadcast(context, getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);//hello try change this flag to 0
+        //intent = new Intent(context, AlarmReceiver.class);
+        intent = new Intent(context, AlarmTimeActivity.class);
+        intent.setAction("dummy" + getId());
+        intent.putExtra("id", getId());
+       // alarmIntent = PendingIntent.getBroadcast(context, getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);//hello try change this flag to 0
+        alarmIntent = PendingIntent.getActivity(context, getId(), intent, 0);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, this.getHour());
         calendar.set(Calendar.MINUTE, this.getMinute());
         calendar.set(Calendar.SECOND, 0);
-        alarmMgr.setExact(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),alarmIntent);
+        alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
         /*alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, alarmIntent);*/
     }
@@ -85,7 +88,7 @@ public class Alarm implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeIntArray(new int[]{this.hour, this.minute,this.getId()});
+        dest.writeIntArray(new int[]{this.hour, this.minute, this.getId()});
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

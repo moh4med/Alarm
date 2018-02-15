@@ -42,8 +42,9 @@ public class AlarmReceiver extends BroadcastReceiver {
                         value.toString(), value.getClass().getName()));
             }
         }*/
-        Log.e(TAG,"alarm finished"+intent.getExtras().get("hello"));
-        Log.e(TAG,"alarm action"+intent.getAction());
+        Log.e(TAG,"id: "+intent.getExtras().get("id"));
+        Log.e(TAG,"id: "+intent.getIntExtra("id",0));
+        Log.e(TAG,"alarm action:"+intent.getAction());
 
     }
 }
